@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -38,15 +38,15 @@
             font-size: 0.75rem;
             font-weight: bold;
         }
-         .indicator-progress.low { background-color: #ef4444; }
+        .indicator-progress.low { background-color: #ef4444; }
         .indicator-progress.medium { background-color: #f59e0b; }
         .indicator-progress.high { background-color: #22c55e; }
 
         button {
-            transition: background-color 0.3s ease, transform 0.1s ease;
+            transition: background-color 0.2s ease, transform 0.1s ease;
         }
         button:hover {
-            opacity: 0.9;
+            opacity: 0.95;
         }
         button:active {
             transform: scale(0.98);
@@ -57,7 +57,6 @@
             padding: 0.5rem 0.75rem;
         }
         .modal {
-            display: none;
             position: fixed;
             z-index: 50;
             left: 0;
@@ -69,12 +68,18 @@
             align-items: center;
             justify-content: center;
         }
+        .modal.hidden {
+            display: none !important;
+        }
+        .modal:not(.hidden) {
+            display: flex !important;
+        }
         .modal-content {
             background-color: #fefefe;
             margin: auto;
             padding: 2rem;
             border: 1px solid #888;
-            width: 80%;
+            width: 90%;
             max-width: 600px;
             border-radius: 0.75rem;
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -90,13 +95,6 @@
         .close-button:focus {
             color: black;
             text-decoration: none;
-        }
-        .indicator-impact-details {
-            display: none;
-            font-size: 0.8rem;
-            margin-left: 1.25rem;
-            margin-top: 0.25rem;
-            color: #4b5563;
         }
         .news-feed {
             background-color: #e0f2fe;
@@ -118,13 +116,12 @@
             border-bottom: none;
             margin-bottom: 0;
         }
-         select option:disabled {
-             color: #9ca3af;
-             cursor: not-allowed;
-         }
-         /* AI Advisor Styles */
+        select option:disabled {
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
         #ai-response {
-            background-color: #f3f4f6;
+            background-color: #f8fafc;
             border-radius: 0.5rem;
             padding: 1rem;
             margin-top: 1rem;
@@ -132,11 +129,11 @@
             color: #1f2937;
             min-height: 100px;
             white-space: pre-wrap;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e2e8f0;
         }
         .loader {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
+            border-top: 4px solid #0284c7;
             border-radius: 50%;
             width: 24px;
             height: 24px;
@@ -147,30 +144,31 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-         @media (max-width: 768px) {
+        @media (max-width: 768px) {
             .flex-col.md\:flex-row { flex-direction: column; }
             .w-full.md\:w-1\/2 { width: 100%; }
-            .modal-content { width: 90%; }
+            .modal-content { width: 95%; padding: 1.25rem; }
             .news-feed { max-height: 120px; }
-         }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
     <!-- SETUP SCREEN -->
     <div id="setup-screen" class="max-w-2xl mx-auto card">
-        <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center text-sky-700">Construir una Ciudad Sostenible</h1>
-        <p class="text-sm text-center text-gray-600 mb-4">Configura una nueva ciudad o continúa una partida guardada si existe.</p>
+        <h1 class="text-2xl md:text-3xl font-bold mb-4 text-center text-sky-700">Construir una Ciudad Sostenible</h1>
+        <p class="text-sm text-center text-gray-600 mb-6">Configura una nueva ciudad o continúa una partida guardada si existe.</p>
+        
         <div class="mb-4">
             <label for="city-name" class="block text-sm font-medium text-gray-700 mb-1">Nombre de tu Ciudad:</label>
             <input type="text" id="city-name" name="city-name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500" placeholder="Ej: Ecópolis">
         </div>
-        <div class="mb-6">
+        <div class="mb-4">
             <label for="initial-budget" class="block text-sm font-medium text-gray-700 mb-1">Presupuesto Inicial (Bitcoin):</label>
             <select id="initial-budget" name="initial-budget" class="w-full p-2 border border-gray-300 rounded-md bg-white focus:ring-sky-500 focus:border-sky-500">
                 <option value="100000000">100,000,000</option>
                 <option value="120000000">120,000,000</option>
-                <option value="150000000">150,000,000</option>
+                <option value="150000000" selected>150,000,000</option>
                 <option value="180000000">180,000,000</option>
                 <option value="200000000">200,000,000</option>
             </select>
@@ -179,14 +177,15 @@
             <label for="room-pin" class="block text-sm font-medium text-gray-700 mb-1">PIN de la Sala (Opcional - Proyectado por el docente):</label>
             <input type="text" id="room-pin" name="room-pin" class="w-full p-2 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500" placeholder="Ej: 4829">
         </div>
-        <button id="save-setup-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md mb-2">
-            Guardar Configuración (Nueva Partida)
+        
+        <button id="save-setup-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-md mb-2 shadow">
+            Comenzar Nueva Partida
         </button>
-        <button id="start-game-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md hidden">
-            Iniciar Juego
+        <button id="start-game-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-md mb-2 hidden shadow">
+            Continuar Partida Guardada
         </button>
-         <button id="reset-game-button" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md mt-2 hidden">
-            Borrar Partida Guardada y Empezar de Nuevo
+        <button id="reset-game-button" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md mt-2 hidden text-sm">
+            Borrar Partida Guardada
         </button>
         <p id="setup-error" class="text-red-500 text-sm mt-2 text-center"></p>
     </div>
@@ -198,7 +197,9 @@
                  <h1 class="text-2xl md:text-3xl font-bold text-sky-700">Ciudad: <span id="display-city-name" class="text-green-600"></span></h1>
                  <p id="display-room-pin-container" class="text-sm text-gray-500 hidden mt-1">📡 Conectado a la Sala: <span id="display-room-pin" class="font-bold text-sky-600"></span></p>
              </div>
-             <div class="text-lg md:text-xl font-semibold bg-white p-3 rounded-lg shadow">Presupuesto: <span id="display-budget" class="text-blue-600"></span> Bitcoin</div>
+             <div class="text-lg md:text-xl font-semibold bg-white p-3 rounded-lg shadow">
+                 Presupuesto: <span id="display-budget" class="text-blue-600 font-bold"></span> Bitcoin
+             </div>
         </div>
 
         <div class="news-feed card">
@@ -209,7 +210,7 @@
         </div>
 
         <div class="card">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">Indicadores de Sostenibilidad (Objetivo: 75)</h2>
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Indicadores de Sostenibilidad (Objetivo: 75 puntos)</h2>
             <div id="indicators-container" class="space-y-3"></div>
         </div>
 
@@ -218,24 +219,27 @@
                  <!-- Proyectos -->
                  <div class="card">
                     <h2 class="text-xl font-bold mb-4 text-gray-800">Implementar Proyectos</h2>
-                     <p class="text-sm text-gray-600 mb-3">Selecciona proyectos para mejorar tu ciudad.</p>
+                    <p class="text-sm text-gray-600 mb-3">Selecciona proyectos para mejorar tu ciudad.</p>
                     <div class="mb-4">
                         <label for="project-category-filter" class="block text-sm font-medium text-gray-700 mb-1">Filtrar por Categoría:</label>
                         <select id="project-category-filter" class="w-full p-2 border border-gray-300 rounded-md bg-white">
                             <option value="all">Todas las Categorías</option>
                         </select>
                     </div>
-                    <div class="mb-4 max-h-60 overflow-y-auto border rounded-md p-2 bg-gray-50">
+                    <div class="mb-4 max-h-72 overflow-y-auto border rounded-md p-2 bg-gray-50">
                         <div id="available-projects" class="space-y-2"></div>
                     </div>
-                     <p id="project-selection-error" class="text-red-500 text-sm mt-2"></p>
-                     <p id="project-selection-success" class="text-green-500 text-sm mt-2"></p>
+                    <p id="project-selection-error" class="text-red-500 text-sm mt-2"></p>
+                    <p id="project-selection-success" class="text-green-500 text-sm mt-2"></p>
                 </div>
 
                 <!-- Eventos -->
                 <div class="card">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800">Eventos Externos</h2>
-                     <p class="text-sm text-gray-600 mb-3">Resuelve las crisis que afectan a tu ciudad.</p>
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-xl font-bold text-gray-800">Eventos Externos</h2>
+                        <span id="events-counter" class="text-xs text-gray-500 font-semibold bg-gray-100 px-2 py-1 rounded"></span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">Resuelve las crisis que afectan a tu ciudad (cada evento se atiende una sola vez).</p>
                     <div class="mb-4">
                         <label for="external-event" class="block text-sm font-medium text-gray-700 mb-1">Selecciona el Evento:</label>
                         <select id="external-event" class="w-full p-2 border border-gray-300 rounded-md bg-white">
@@ -243,7 +247,7 @@
                         </select>
                     </div>
                     <div id="event-options-display" class="mb-4 space-y-2 hidden"></div>
-                     <button id="apply-event-button" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <button id="apply-event-button" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2.5 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed shadow" disabled>
                         Aplicar Efectos del Evento
                     </button>
                     <p id="event-error" class="text-red-500 text-sm mt-2"></p>
@@ -254,18 +258,21 @@
              <div class="w-full md:w-1/2 space-y-6">
                 <!-- AI Advisor -->
                 <div class="card bg-sky-50 border border-sky-200">
-                    <h2 class="text-xl font-bold mb-4 text-sky-800">Asesor de Sostenibilidad: Eco@resma</h2>
-                    <div class="mb-4">
+                    <h2 class="text-xl font-bold mb-2 text-sky-800 flex items-center gap-2">
+                        <span>🤖</span> Asesor de Sostenibilidad: Eco@resma
+                    </h2>
+                    <p class="text-xs text-sky-700 mb-3">Orientación pedagógica y ambiental para optimizar tus decisiones de mandato.</p>
+                    <div class="mb-3">
                         <label for="ai-question" class="block text-sm font-medium text-gray-700 mb-1">Haz una pregunta sobre tu ciudad:</label>
-                        <textarea id="ai-question" rows="3" class="w-full p-2" placeholder="Ej: ¿Cuál es nuestro mayor riesgo ahora mismo?"></textarea>
+                        <textarea id="ai-question" rows="3" class="w-full p-2 bg-white" placeholder="Ej: ¿Cuál es nuestro mayor riesgo y qué proyecto deberíamos priorizar?"></textarea>
                     </div>
-                    <button id="ask-ai-button" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-md">
+                    <button id="ask-ai-button" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-md shadow">
                         Consultar a Eco@resma
                     </button>
                     <div id="ai-response-container" class="mt-4">
                         <div id="ai-loader" class="loader hidden"></div>
                         <div id="ai-response">Esperando consulta...</div>
-                        <button id="copy-ai-response-button" class="w-full bg-gray-500 hover:bg-gray-600 text-white text-xs font-bold py-1 px-2 rounded-md mt-2 hidden">
+                        <button id="copy-ai-response-button" class="w-full bg-gray-600 hover:bg-gray-700 text-white text-xs font-bold py-1.5 px-2 rounded-md mt-2 hidden transition-all">
                             Copiar Consejo
                         </button>
                     </div>
@@ -273,8 +280,8 @@
 
                 <!-- Bonos -->
                 <div class="card">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800">Bonos Sostenibles</h2>
-                     <p class="text-sm text-gray-600 mb-3">Cumple los requisitos para obtener fondos extra.</p>
+                    <h2 class="text-xl font-bold mb-2 text-gray-800">Bonos Sostenibles</h2>
+                    <p class="text-sm text-gray-600 mb-3">Cumple los requisitos de indicadores para obtener fondos adicionales.</p>
                     <div class="mb-4">
                         <label for="sustainable-bond" class="block text-sm font-medium text-gray-700 mb-1">Selecciona el Bono:</label>
                         <select id="sustainable-bond" class="w-full p-2 border border-gray-300 rounded-md bg-white">
@@ -282,16 +289,16 @@
                         </select>
                     </div>
                     <div id="bond-options-display" class="mb-4 space-y-2 hidden"></div>
-                    <button id="apply-bond-button" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <button id="apply-bond-button" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed shadow" disabled>
                         Reclamar Bono
                     </button>
-                     <p id="bond-error" class="text-red-500 text-sm mt-2"></p>
-                     <p id="bond-success" class="text-green-500 text-sm mt-2"></p>
+                    <p id="bond-error" class="text-red-500 text-sm mt-2"></p>
+                    <p id="bond-success" class="text-green-500 text-sm mt-2"></p>
                 </div>
 
-                 <div class="card text-center">
-                     <button id="finish-game-button" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-md text-lg">
-                        Finalizar Juego y Ver Resumen
+                <div class="card text-center bg-gray-50 border">
+                    <button id="finish-game-button" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-6 rounded-md text-lg shadow-md transition-all">
+                        Finalizar Mandato y Ver Resumen
                     </button>
                 </div>
             </div>
@@ -299,36 +306,36 @@
     </div>
 
     <!-- SUMMARY MODAL -->
-    <div id="summary-modal" class="modal hidden flex items-center justify-center">
-        <div class="modal-content bg-white p-6 rounded-lg shadow-xl w-full max-w-md mx-auto">
-            <span id="close-modal-button" class="close-button text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</span>
-            <h2 class="text-2xl font-bold mb-4 text-center text-sky-700">Resumen del Juego</h2>
-            <div id="summary-content" class="space-y-2 text-gray-700 mb-6">
-                <p><strong>Ciudad:</strong> <span id="summary-city-name"></span></p>
-                <p><strong>Presupuesto Inicial:</strong> <span id="summary-initial-budget"></span> Bitcoin</p>
-                <p><strong>Gastos Totales:</strong> <span id="summary-total-expenses"></span> Bitcoin</p>
-                <p><strong>Bonos Recibidos:</strong> <span id="summary-total-bonds"></span> Bitcoin</p>
-                <p><strong>Presupuesto Final:</strong> <span id="summary-final-budget"></span> Bitcoin</p>
-                <h3 class="text-lg font-semibold mt-4 mb-2">Puntuaciones Finales:</h3>
+    <div id="summary-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <h2 class="text-2xl font-bold mb-4 text-center text-sky-700">Resumen del Mandato</h2>
+            <div id="summary-content" class="space-y-2 text-gray-700 mb-6 bg-slate-50 p-4 rounded-lg border text-sm">
+                <p><strong>Ciudad:</strong> <span id="summary-city-name" class="font-semibold text-gray-900"></span></p>
+                <p><strong>Presupuesto Inicial:</strong> <span id="summary-initial-budget" class="font-semibold text-blue-700"></span> Bitcoin</p>
+                <p><strong>Gastos Totales:</strong> <span id="summary-total-expenses" class="font-semibold text-red-600"></span> Bitcoin</p>
+                <p><strong>Bonos Recibidos:</strong> <span id="summary-total-bonds" class="font-semibold text-purple-700"></span> Bitcoin</p>
+                <p><strong>Presupuesto Final:</strong> <span id="summary-final-budget" class="font-semibold text-green-700"></span> Bitcoin</p>
+                <h3 class="text-base font-bold mt-4 mb-2 text-gray-800 border-t pt-2">Puntuaciones Finales de Sostenibilidad:</h3>
                 <div id="summary-indicators" class="space-y-1"></div>
             </div>
-            <p id="summary-result-message" class="text-xl font-bold text-center mb-6"></p>
+            
+            <p id="summary-result-message" class="text-xl font-bold text-center mb-6 py-2 px-4 rounded-md"></p>
             
             <div class="mt-4 mb-6 border-t pt-4">
-                <h3 class="text-lg font-bold mb-2 text-sky-800">Evaluación de Eco@resma:</h3>
+                <h3 class="text-base font-bold mb-2 text-sky-800">Evaluación de Eco@resma:</h3>
                 <div id="final-ai-loader" class="loader hidden"></div>
-                <div id="final-ai-response" class="bg-sky-50 p-4 rounded-md border border-sky-200 text-gray-700 italic text-sm">
+                <div id="final-ai-response" class="bg-sky-50 p-4 rounded-md border border-sky-200 text-gray-700 italic text-sm leading-relaxed">
                     Eco@resma está redactando su evaluación final...
                 </div>
             </div>
 
             <div class="flex justify-between gap-4">
-                 <button id="close-summary-button" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md">Cerrar</button>
-                <button id="play-again-button" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">Jugar de Nuevo</button>
+                <button id="close-summary-button" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2.5 px-4 rounded-md">Cerrar</button>
+                <button id="play-again-button" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-md shadow">Jugar de Nuevo</button>
             </div>
         </div>
     </div>
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -338,13 +345,19 @@
         // --- CLOUD SETUP ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'inem-ciudad-sostenible';
         const firebaseConfig = {
-  apiKey: "AIzaSyD-PsLCIwdigiX9iGLYQZPh9Oa9B8dWTlQ",
-  authDomain: "ciudad-sostenible-inem.firebaseapp.com",
-  projectId: "ciudad-sostenible-inem",
-  storageBucket: "ciudad-sostenible-inem.firebasestorage.app",
-  messagingSenderId: "305405276300",
-  appId: "1:305405276300:web:0a6ba0f6b8f2e1fe174ba9"
-};
+            apiKey: "AIzaSyD-PsLCIwdigiX9iGLYQZPh9Oa9B8dWTlQ",
+            authDomain: "ciudad-sostenible-inem.firebaseapp.com",
+            projectId: "ciudad-sostenible-inem",
+            storageBucket: "ciudad-sostenible-inem.firebasestorage.app",
+            messagingSenderId: "305405276300",
+            appId: "1:305405276300:web:0a6ba0f6b8f2e1fe174ba9"
+        };
+        
+        // --- GOOGLE GEMINI API KEY (OPCIONAL PARA ECO@RESMA EN GITHUB PAGES) ---
+        // Si publicas este archivo en GitHub Pages (sin servidor Node.js), puedes pegar aquí tu clave de Google Gemini
+        // generada gratis en: https://aistudio.google.com/app/apikey
+        // Si la dejas vacía, Eco@resma funciona automáticamente con su asesor pedagógico integrado.
+        const GEMINI_API_KEY = "";
         
         let app, db, auth;
         let isCloudConnected = false;
@@ -364,7 +377,7 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) { userId = user.uid; isCloudConnected = true; }
                 });
-            } catch (e) { console.error("Firebase init error:", e); }
+            } catch (e) { console.error("Firebase init:", e); }
         }
         initCloud();
 
@@ -387,9 +400,9 @@
 
         const initialGameState = {
             cityName: '', roomPin: '', initialBudget: 0, currentBudget: 0,
-            indicators: {}, spentOnProjects: 0, earnedFromBonds: 0,
-            projectsImplemented: [], bondsClaimed: [], newsLog: [],
-            maxNewsItems: 5, gameInProgress: false
+            indicators: {}, spentOnProjects: 0, spentOnEvents: 0, earnedFromBonds: 0,
+            projectsImplemented: [], eventsResolved: [], bondsClaimed: [], newsLog: [],
+            maxNewsItems: 6, gameInProgress: false
         };
 
         let gameState = JSON.parse(JSON.stringify(initialGameState));
@@ -403,13 +416,12 @@
             'social_equity': { name: 'Equidad Social', score: 50, target: 75, icon: '🤝' }
         };
 
-        // Proyectos
         const projects = [
             { id: 'p1', name: 'Planta de Tratamiento de Agua Avanzada', category: 'Infraestructura', cost: 15000000, impact: { water_management: 15, air_quality: 2 }, etiqueta: 'Trat. Agua', icon: '🏭' },
             { id: 'p2', name: 'Red de Ciclovías Seguras', category: 'Infraestructura', cost: 8000000, impact: { air_quality: 5, green_spaces: 3, social_equity: 2 }, etiqueta: 'Ciclovia', icon: '🚲' },
             { id: 'p3', name: 'Modernización del Transporte Público (Eléctrico)', category: 'Infraestructura', cost: 25000000, impact: { air_quality: 12, social_equity: 5 }, etiqueta: 'Bus Eléctrico', icon: '🚌' },
             { id: 'p4', name: 'Instalación de Paneles Solares en Edificios Públicos', category: 'Infraestructura', cost: 12000000, impact: { renewable_energy: 16 }, etiqueta: 'Panel Solar', icon: '☀️' },
-            { id: 'p5', name: 'Creación de Parque Urbano Grande', category: 'Infraestructura', cost: 10000000, impact: { green_spaces: 15, air_quality: 3, social_equity: 2 }, news: '¡Nuevo parque urbano inaugurado!', etiqueta: 'Parque', icon: '🌳' },
+            { id: 'p5', name: 'Creación de Parque Urbano Grande', category: 'Infraestructura', cost: 10000000, impact: { green_spaces: 15, air_quality: 3, social_equity: 2 }, news: '¡Nuevo parque urbano inaugurado con éxito!', etiqueta: 'Parque', icon: '🌳' },
             { id: 'p6', name: 'Sistema de Recolección Inteligente de Basura', category: 'Infraestructura', cost: 7000000, impact: { waste_reduction: 12 }, etiqueta: 'Basura Intel.', icon: '🗑️' },
             { id: 'p7', name: 'Mejora de Aislamiento Térmico en Viviendas Sociales', category: 'Infraestructura', cost: 9000000, impact: { renewable_energy: -2, social_equity: 8 }, etiqueta: 'Aislamiento T.', icon: '🧱' },
             { id: 'p8', name: 'Infraestructura de Carga Vehículos Eléctricos', category: 'Infraestructura', cost: 6000000, impact: { air_quality: 4, renewable_energy: 3 }, etiqueta: 'Carga EV', icon: '🔌' },
@@ -434,7 +446,6 @@
             { id: 'p27', name: 'Centro Comercial de Lujo', category: 'Industria/Comercio', cost: 18000000, impact: { social_equity: -5, waste_reduction: -4 }, etiqueta: 'Mall Lujo', icon: '🛍️' },
         ];
 
-        // Lista completa de 26 Eventos Externos
         const externalEvents = [
             { id: 'e1', name: 'Ola de Calor Inesperada', description: 'Una ola de calor aumenta la demanda de energía y agua.', options: [{ id: 'o1', text: 'Implementar restricciones de agua', budgetChange: -5000000, impact: { water_management: 5, social_equity: -5 } }, { id: 'o2', text: 'Subsidiar aire acondicionado', budgetChange: -10000000, impact: { renewable_energy: -10, social_equity: 5, air_quality: -5 } }, { id: 'o3', text: 'Campaña de concienciación', budgetChange: -2000000, impact: { water_management: 2, renewable_energy: 2 } }] },
             { id: 'e2', name: 'Descubrimiento Tecnológico Local', description: 'Una startup local desarrolla una nueva tecnología de purificación de aire.', options: [{ id: 'o1', text: 'Invertir fuertemente', budgetChange: -12000000, impact: { air_quality: 15, waste_reduction: 5 } }, { id: 'o2', text: 'Apoyo moderado y pruebas piloto', budgetChange: -5000000, impact: { air_quality: 8 } }, { id: 'o3', text: 'No invertir', budgetChange: 0, impact: { social_equity: -2 } }] },
@@ -464,7 +475,6 @@
             { id: 'e26', name: 'Avance Baterías Almacenamiento', description: 'Almacenamiento de energía renovable viable.', options: [{ id: 'o1', text: 'Planta municipal', budgetChange: -25000000, impact: { renewable_energy: 15 } }, { id: 'o2', text: 'Incentivar uso residencial', budgetChange: -10000000, impact: { renewable_energy: 10, social_equity: 2 } }, { id: 'o3', text: 'Esperar que tecnología baje', budgetChange: 0, impact: { renewable_energy: -5 } }] }
         ];
 
-        // Lista completa de 8 Bonos Sostenibles
         const sustainableBonds = [
             { id: 'b1', name: 'Subvención Internacional para el Clima', description: 'Fondos disponibles para proyectos de energía renovable y eficiencia.', requirements: { renewable_energy: 60 }, options: [{ id: 'o1', text: 'Inversión máxima en solar', budgetChange: 20000000, impact: {} }, { id: 'o2', text: 'Diversificar eficiencia y solar', budgetChange: 15000000, impact: {} }, { id: 'o3', text: 'Enfocar en eficiencia', budgetChange: 12000000, impact: {} }] },
             { id: 'b2', name: 'Inversión Extranjera Directa (Verde)', description: 'Una empresa extranjera quiere invertir en infraestructura verde.', requirements: { air_quality: 60 }, options: [{ id: 'o1', text: 'Facilitar planta reciclaje', budgetChange: 18000000, impact: {} }, { id: 'o2', text: 'Apoyar parque eólico', budgetChange: 25000000, impact: {} }, { id: 'o3', text: 'Atraer transporte limpio', budgetChange: 15000000, impact: {} }] },
@@ -498,6 +508,7 @@
         const projectSelectionError = document.getElementById('project-selection-error');
         const projectSelectionSuccess = document.getElementById('project-selection-success');
         const externalEventSelect = document.getElementById('external-event');
+        const eventsCounter = document.getElementById('events-counter');
         const eventOptionsContainer = document.getElementById('event-options-display');
         const applyEventButton = document.getElementById('apply-event-button');
         const eventError = document.getElementById('event-error');
@@ -514,7 +525,6 @@
         const aiResponseDisplay = document.getElementById('ai-response');
         const copyAiResponseButton = document.getElementById('copy-ai-response-button');
         const finishGameButton = document.getElementById('finish-game-button');
-        const summaryContent = document.getElementById('summary-content');
         const summaryCityName = document.getElementById('summary-city-name');
         const summaryInitialBudget = document.getElementById('summary-initial-budget');
         const summaryTotalExpenses = document.getElementById('summary-total-expenses');
@@ -529,7 +539,10 @@
         const playAgainButton = document.getElementById('play-again-button');
 
         // --- FUNCIONES HELPER ---
-        function saveGameState() { try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gameState)); } catch(e){} }
+        function saveGameState() { 
+            try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gameState)); } catch(e){} 
+        }
+
         function loadGameState() {
             try {
                 const savedState = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -538,22 +551,46 @@
                     if (loadedState && loadedState.cityName) {
                         gameState = { ...initialGameState, ...loadedState };
                         gameState.projectsImplemented = Array.isArray(loadedState.projectsImplemented) ? loadedState.projectsImplemented : [];
+                        gameState.eventsResolved = Array.isArray(loadedState.eventsResolved) ? loadedState.eventsResolved : [];
                         gameState.bondsClaimed = Array.isArray(loadedState.bondsClaimed) ? loadedState.bondsClaimed : [];
+                        gameState.newsLog = Array.isArray(loadedState.newsLog) ? loadedState.newsLog : [];
                         return true;
                     }
                 }
             } catch(e){}
             return false;
         }
-        function clearSavedGameState() { localStorage.removeItem(LOCAL_STORAGE_KEY); }
-        function formatCurrency(amount) { const sign = amount > 0 ? '+' : amount < 0 ? '-' : ''; return `${sign}${new Intl.NumberFormat('es-CO').format(Math.abs(amount))}`; }
-        function addNews(message) { if(!message)return; gameState.newsLog.unshift(message); if(gameState.newsLog.length > gameState.maxNewsItems) gameState.newsLog.pop(); updateNewsFeedUI(); saveGameState(); }
+
+        function clearSavedGameState() { 
+            localStorage.removeItem(LOCAL_STORAGE_KEY); 
+        }
+
+        function formatCurrency(amount) { 
+            const sign = amount > 0 ? '+' : amount < 0 ? '-' : ''; 
+            return `${sign}${new Intl.NumberFormat('es-CO').format(Math.abs(amount))}`; 
+        }
+
+        function addNews(message) { 
+            if(!message) return; 
+            gameState.newsLog.unshift(message); 
+            if(gameState.newsLog.length > (gameState.maxNewsItems || 6)) gameState.newsLog.pop(); 
+            updateNewsFeedUI(); 
+            saveGameState(); 
+        }
+
         function updateNewsFeedUI() { 
             newsFeedContent.innerHTML = ''; 
+            if (gameState.newsLog.length === 0) {
+                newsFeedContent.innerHTML = '<p class="news-item text-gray-500">Sin novedades recientes en la ciudad.</p>';
+                return;
+            }
             gameState.newsLog.forEach(msg => { 
-                const p = document.createElement('p'); p.className = 'news-item'; p.textContent = msg; newsFeedContent.appendChild(p); 
+                const p = document.createElement('p'); 
+                p.className = 'news-item'; 
+                p.textContent = msg; 
+                newsFeedContent.appendChild(p); 
             }); 
-            if(newsFeedContent.parentElement) newsFeedContent.parentElement.scrollTop = newsFeedContent.parentElement.scrollHeight;
+            if(newsFeedContent.parentElement) newsFeedContent.parentElement.scrollTop = 0;
         }
         
         function updateIndicatorsUI() {
@@ -561,16 +598,28 @@
             for (const key in gameState.indicators) {
                 const ind = gameState.indicators[key];
                 const score = Math.min(100, Math.max(0, ind.score));
-                let color = score >= ind.target ? 'high' : (score >= ind.target*0.6 ? 'medium' : 'low');
+                let colorClass = score >= ind.target ? 'high' : (score >= ind.target * 0.6 ? 'medium' : 'low');
                 indicatorsContainer.innerHTML += `
                     <div class="mb-2">
-                        <div class="flex justify-between items-center mb-1 text-sm font-medium"><span>${ind.icon} ${ind.name}</span><span class="${score >= ind.target ? 'text-green-600' : 'text-gray-600'}">${score} / 100</span></div>
-                        <div class="indicator-bar"><div class="indicator-progress ${color}" style="width: ${score}%;">${score}%</div></div>
+                        <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                            <span>${ind.icon} ${ind.name}</span>
+                            <span class="${score >= ind.target ? 'text-green-600 font-bold' : 'text-gray-700'}">${score} / 100</span>
+                        </div>
+                        <div class="indicator-bar"><div class="indicator-progress ${colorClass}" style="width: ${score}%;">${score}%</div></div>
                     </div>`;
             }
         }
 
-        function updateBudgetUI() { displayBudget.textContent = new Intl.NumberFormat('es-CO').format(gameState.currentBudget); }
+        function updateBudgetUI() { 
+            displayBudget.textContent = new Intl.NumberFormat('es-CO').format(gameState.currentBudget);
+            if (gameState.currentBudget < 0) {
+                displayBudget.className = 'text-red-600 font-bold';
+            } else if (gameState.currentBudget < (gameState.initialBudget * 0.2)) {
+                displayBudget.className = 'text-amber-600 font-bold';
+            } else {
+                displayBudget.className = 'text-blue-600 font-bold';
+            }
+        }
 
         function loadProjectCategories() {
             const cats = [...new Set(projects.map(p => p.category))];
@@ -582,32 +631,38 @@
             availableProjectsContainer.innerHTML = '';
             const cat = projectCategoryFilter.value;
             const avail = projects.filter(p => !gameState.projectsImplemented.includes(p.id) && (cat === 'all' || p.category === cat));
-            if(avail.length === 0) { availableProjectsContainer.innerHTML = '<p class="text-gray-500 text-sm">No hay proyectos.</p>'; return; }
+            
+            if(avail.length === 0) { 
+                availableProjectsContainer.innerHTML = '<p class="text-gray-500 text-sm p-4 text-center">¡Todos los proyectos de esta categoría han sido ejecutados!</p>'; 
+                return; 
+            }
+
             avail.forEach(p => {
                 const div = document.createElement('div');
-                div.className = 'p-4 border rounded-lg bg-white shadow-sm mb-3';
+                div.className = 'p-3.5 border rounded-lg bg-white shadow-sm mb-3';
                 
-                // Formatear la lista de impactos
                 let impactHtml = '';
                 for(const key in p.impact) {
                     const val = p.impact[key];
-                    impactHtml += `<li class="text-xs text-gray-700">${sustainabilityIndicators[key].name}: <span class="font-bold ${val > 0 ? 'text-green-600' : 'text-red-500'}">${val > 0 ? '+' : ''}${val} pts</span></li>`;
+                    const indName = sustainabilityIndicators[key] ? sustainabilityIndicators[key].name : key;
+                    impactHtml += `<li class="text-xs text-gray-700">${indName}: <span class="font-bold ${val > 0 ? 'text-green-600' : 'text-red-500'}">${val > 0 ? '+' : ''}${val} pts</span></li>`;
                 }
 
+                const canAfford = gameState.currentBudget >= p.cost;
+
                 div.innerHTML = `
-                    <div class="flex justify-between items-start mb-3 border-b pb-2">
-                        <div class="font-bold text-gray-800 text-base leading-tight pr-2">${p.icon || ''} ${p.name}</div>
-                        <button data-id="${p.id}" class="btn-imp bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1.5 rounded shadow-sm font-semibold flex-shrink-0" ${gameState.currentBudget < p.cost ? 'disabled' : ''}>
-                            Implementar
+                    <div class="flex justify-between items-start mb-2 border-b pb-2">
+                        <div class="font-bold text-gray-800 text-sm leading-tight pr-2">${p.icon || ''} ${p.name}</div>
+                        <button data-id="${p.id}" class="btn-imp ${canAfford ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'} text-white text-xs px-3 py-1.5 rounded shadow-sm font-semibold flex-shrink-0" ${!canAfford ? 'disabled' : ''}>
+                            ${canAfford ? 'Implementar' : 'Sin Fondos'}
                         </button>
                     </div>
-                    <div class="space-y-1.5">
+                    <div class="space-y-1">
                         <p class="text-xs"><span class="font-semibold text-gray-700">Categoría:</span> <span class="text-gray-600">${p.category}</span></p>
-                        <p class="text-xs"><span class="font-semibold text-gray-700">Costo Estimado:</span> <span class="text-blue-600 font-bold">${formatCurrency(-p.cost)} Bitcoin</span></p>
-                        <p class="text-xs"><span class="font-semibold text-gray-700">Etiqueta p/ Mapa:</span> <span class="bg-gray-100 border px-1.5 py-0.5 rounded text-gray-600">${p.etiqueta || 'N/A'}</span></p>
+                        <p class="text-xs"><span class="font-semibold text-gray-700">Costo:</span> <span class="text-blue-600 font-bold">${formatCurrency(-p.cost)} Bitcoin</span></p>
                         <div class="pt-1">
                             <span class="text-xs font-semibold text-gray-700">Impacto en Sostenibilidad:</span>
-                            <ul class="list-disc list-inside mt-0.5 ml-1">
+                            <ul class="list-disc list-inside mt-0.5 ml-1 space-y-0.5">
                                 ${impactHtml}
                             </ul>
                         </div>
@@ -615,57 +670,95 @@
                 `;
                 availableProjectsContainer.appendChild(div);
             });
+
             document.querySelectorAll('.btn-imp').forEach(btn => btn.addEventListener('click', (e) => {
-                const pid = e.target.getAttribute('data-id');
+                const target = e.target.closest('.btn-imp');
+                const pid = target.getAttribute('data-id');
                 const p = projects.find(x => x.id === pid);
                 if(p && gameState.currentBudget >= p.cost) {
                     applyEffects(-p.cost, p.impact);
                     gameState.spentOnProjects += p.cost;
                     gameState.projectsImplemented.push(pid);
-                    if(p.news) addNews(p.news);
+                    addNews(`✅ Proyecto completado: ${p.name}`);
                     loadProjects();
                     loadSustainableBonds();
+                } else if (p) {
+                    projectSelectionError.textContent = "Presupuesto insuficiente para este proyecto.";
+                    setTimeout(() => projectSelectionError.textContent = '', 3000);
                 }
             }));
         }
 
         function loadExternalEvents() {
             externalEventSelect.innerHTML = '<option value="">-- Selecciona un evento --</option>';
-            [...externalEvents].sort((a,b) => a.name.localeCompare(b.name)).forEach(ev => {
+            const disponibles = externalEvents.filter(ev => !(gameState.eventsResolved || []).includes(ev.id));
+            
+            if (eventsCounter) {
+                eventsCounter.textContent = `${disponibles.length} de ${externalEvents.length} disponibles`;
+            }
+
+            if (disponibles.length === 0) {
                 const opt = document.createElement('option');
-                opt.value = ev.id; opt.textContent = ev.name; opt.dataset.eventData = JSON.stringify(ev);
+                opt.value = "";
+                opt.textContent = "🎉 ¡Has resuelto todos los eventos externos!";
+                externalEventSelect.appendChild(opt);
+                return;
+            }
+
+            [...disponibles].sort((a,b) => a.name.localeCompare(b.name)).forEach(ev => {
+                const opt = document.createElement('option');
+                opt.value = ev.id; 
+                opt.textContent = ev.name; 
+                opt.dataset.eventData = JSON.stringify(ev);
                 externalEventSelect.appendChild(opt);
             });
         }
 
-        // Cargar bonos FILTRANDO los que ya fueron reclamados
         function loadSustainableBonds() {
             sustainableBondSelect.innerHTML = '<option value="">-- Selecciona un bono --</option>';
             const disponibles = sustainableBonds.filter(b => !gameState.bondsClaimed.includes(b.id));
             
+            if (disponibles.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = "";
+                opt.textContent = "🏆 ¡Has reclamado todos los bonos sostenibles disponibles!";
+                sustainableBondSelect.appendChild(opt);
+                return;
+            }
+
             [...disponibles].sort((a,b) => a.name.localeCompare(b.name)).forEach(bond => {
                 const opt = document.createElement('option');
-                opt.value = bond.id; opt.textContent = bond.name; opt.dataset.bondData = JSON.stringify(bond);
+                opt.value = bond.id; 
+                opt.textContent = bond.name; 
+                opt.dataset.bondData = JSON.stringify(bond);
                 
-                let reqMet = true; let reqTxt = [];
+                let reqMet = true; 
+                let reqTxt = [];
                 for(const key in bond.requirements) {
-                    if(gameState.indicators[key].score < bond.requirements[key]) {
-                        reqMet = false; reqTxt.push(`${sustainabilityIndicators[key].name} >= ${bond.requirements[key]}`);
+                    const currentVal = (gameState.indicators[key] && gameState.indicators[key].score) || 0;
+                    if(currentVal < bond.requirements[key]) {
+                        reqMet = false; 
+                        const indName = sustainabilityIndicators[key] ? sustainabilityIndicators[key].name : key;
+                        reqTxt.push(`${indName} ≥ ${bond.requirements[key]} (actual: ${currentVal})`);
                     }
                 }
-                if(!reqMet) { opt.disabled = true; opt.textContent += ` (Falta: ${reqTxt.join(', ')})`; }
+                if(!reqMet) { 
+                    opt.disabled = true; 
+                    opt.textContent += ` 🔒 (Falta: ${reqTxt.join(', ')})`; 
+                } else {
+                    opt.textContent += ` ⭐ (Cumplido)`;
+                }
                 sustainableBondSelect.appendChild(opt);
             });
         }
 
         function showOptions(elementType, container, itemData) {
-            container.innerHTML = `<p class="text-sm font-semibold text-gray-800 mb-3 bg-gray-50 p-2 rounded border border-gray-200">${itemData.description}</p>`;
+            container.innerHTML = `<p class="text-sm font-semibold text-gray-800 mb-3 bg-gray-50 p-2.5 rounded border border-gray-200">${itemData.description}</p>`;
             const letras = ['A', 'B', 'C', 'D', 'E'];
             itemData.options.forEach((opt, index) => {
                 const label = document.createElement('label');
                 label.className = 'block p-3 border rounded-lg cursor-pointer hover:bg-sky-50 transition-colors bg-white mb-2 shadow-sm';
                 
-                // Procesar impactos visualmente igual al PDF
                 let impactHtml = '';
                 if (opt.impact && Object.keys(opt.impact).length > 0) {
                     const impactArr = [];
@@ -676,15 +769,18 @@
                     }
                     impactHtml = impactArr.join(', ');
                 } else {
-                    impactHtml = 'Sin impacto directo en indicadores.';
+                    impactHtml = 'Sin variación en indicadores.';
                 }
 
                 label.innerHTML = `
                     <div class="flex items-start gap-3">
                         <input type="radio" name="${elementType}-option" value="${opt.id}" class="mt-1" data-opt='${JSON.stringify(opt)}'>
                         <div class="flex-1 space-y-1">
-                            <p class="font-bold text-gray-800 text-sm">Opción: ${letras[index]}) ${opt.text}</p>
-                            <p class="text-xs"><span class="font-semibold text-gray-600">${elementType === 'sustainable-bond' ? 'Presupuesto:' : 'Costo/Beneficio:'}</span> <span class="${opt.budgetChange >= 0 ? 'text-green-600' : 'text-red-600'} font-bold">${formatCurrency(opt.budgetChange)} Bitcoin</span></p>
+                            <p class="font-bold text-gray-800 text-sm">Opción ${letras[index]}: ${opt.text}</p>
+                            <p class="text-xs">
+                                <span class="font-semibold text-gray-600">${elementType === 'sustainable-bond' ? 'Subvención:' : 'Costo / Rendimiento:'}</span> 
+                                <span class="${opt.budgetChange >= 0 ? 'text-green-600' : 'text-red-600'} font-bold">${formatCurrency(opt.budgetChange)} Bitcoin</span>
+                            </p>
                             ${elementType === 'external-event' ? `<p class="text-xs"><span class="font-semibold text-gray-600">Impacto:</span> <span class="text-gray-700">${impactHtml}</span></p>` : ''}
                         </div>
                     </div>
@@ -706,48 +802,101 @@
                     gameState.indicators[key].score = Math.max(0, Math.min(100, gameState.indicators[key].score));
                 }
             }
-            updateBudgetUI(); updateIndicatorsUI(); saveGameState(); syncToCloud();
+            if (gameState.currentBudget < 0) {
+                addNews('🚨 ¡ALERTA FISCAL! La ciudad ha entrado en presupuesto negativo.');
+            }
+            updateBudgetUI(); 
+            updateIndicatorsUI(); 
+            saveGameState(); 
+            syncToCloud();
         }
 
         // --- EVENTOS UI ---
         projectCategoryFilter.addEventListener('change', loadProjects);
 
-        // Lógica para copiar el consejo de Eco@resma
-        copyAiResponseButton.addEventListener('click', () => {
-            const textArea = document.createElement("textarea");
-            textArea.value = aiResponseDisplay.textContent;
-            document.body.appendChild(textArea);
-            textArea.select();
+        // Copiar consejo de Eco@resma con clipboard API moderna
+        copyAiResponseButton.addEventListener('click', async () => {
+            const textToCopy = aiResponseDisplay.textContent;
             try {
-                document.execCommand('copy');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(textToCopy);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = textToCopy;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
                 const originalText = copyAiResponseButton.textContent;
-                copyAiResponseButton.textContent = "¡Copiado!";
+                copyAiResponseButton.textContent = "✅ ¡Copiado!";
                 setTimeout(() => copyAiResponseButton.textContent = originalText, 2000);
             } catch (err) {
-                console.error('Error al copiar', err);
+                console.error('Error al copiar:', err);
             }
-            document.body.removeChild(textArea);
         });
+
+        function startPlaying() {
+            setupScreen.classList.add('hidden'); 
+            gameScreen.classList.remove('hidden');
+            displayCityName.textContent = gameState.cityName;
+            if(gameState.roomPin) { 
+                displayRoomPin.textContent = gameState.roomPin; 
+                displayRoomPinContainer.classList.remove('hidden'); 
+            }
+            updateBudgetUI(); 
+            updateIndicatorsUI(); 
+            updateNewsFeedUI(); 
+            loadProjectCategories(); 
+            loadProjects(); 
+            loadExternalEvents(); 
+            loadSustainableBonds();
+        }
 
         saveSetupButton.addEventListener('click', () => {
             const name = cityNameInput.value.trim();
-            if(!name) { setupError.textContent = 'Ingresa un nombre'; return; }
+            if(!name) { setupError.textContent = 'Por favor, ingresa el nombre de la ciudad.'; return; }
+            setupError.textContent = '';
+            
             gameState = JSON.parse(JSON.stringify(initialGameState));
-            gameState.cityName = name; gameState.roomPin = roomPinInput.value.trim();
+            gameState.cityName = name; 
+            gameState.roomPin = roomPinInput.value.trim();
             gameState.initialBudget = parseInt(initialBudgetSelect.value);
             gameState.currentBudget = gameState.initialBudget;
-            for(const k in sustainabilityIndicators) { gameState.indicators[k] = { ...sustainabilityIndicators[k] }; }
+            for(const k in sustainabilityIndicators) { 
+                gameState.indicators[k] = { ...sustainabilityIndicators[k] }; 
+            }
             gameState.gameInProgress = true;
-            saveGameState(); syncToCloud();
-            setupScreen.classList.add('hidden'); gameScreen.classList.remove('hidden');
-            displayCityName.textContent = name;
-            if(gameState.roomPin) { displayRoomPin.textContent = gameState.roomPin; displayRoomPinContainer.classList.remove('hidden'); }
-            updateBudgetUI(); updateIndicatorsUI(); loadProjectCategories(); loadProjects(); loadExternalEvents(); loadSustainableBonds(); addNews(`¡${name} ha comenzado su mandato!`);
+            saveGameState(); 
+            syncToCloud();
+            startPlaying();
+            addNews(`¡Mandato iniciado en ${name}! Objetivo: alcanzar 75 puntos en todos los indicadores.`);
+        });
+
+        startGameButton.addEventListener('click', () => {
+            if (gameState.gameInProgress && gameState.cityName) {
+                startPlaying();
+                addNews('Continuando mandato previamente guardado.');
+            }
+        });
+
+        resetGameButton.addEventListener('click', () => {
+            if (confirm('¿Seguro que deseas eliminar la partida guardada y empezar desde cero?')) {
+                clearSavedGameState();
+                gameState = JSON.parse(JSON.stringify(initialGameState));
+                startGameButton.classList.add('hidden');
+                resetGameButton.classList.add('hidden');
+                cityNameInput.value = '';
+                roomPinInput.value = '';
+                setupError.textContent = 'Partida previa eliminada con éxito.';
+                setTimeout(() => setupError.textContent = '', 2500);
+            }
         });
 
         externalEventSelect.addEventListener('change', (e) => {
-            eventOptionsContainer.classList.add('hidden'); applyEventButton.disabled = true;
-            if(e.target.selectedIndex > 0) {
+            eventOptionsContainer.classList.add('hidden'); 
+            applyEventButton.disabled = true;
+            if(e.target.selectedIndex > 0 && e.target.options[e.target.selectedIndex].dataset.eventData) {
                 const data = JSON.parse(e.target.options[e.target.selectedIndex].dataset.eventData);
                 showOptions('external-event', eventOptionsContainer, data);
             }
@@ -757,16 +906,33 @@
             const radio = document.querySelector('input[name="external-event-option"]:checked');
             if(radio) {
                 const opt = JSON.parse(radio.dataset.opt);
+                const eventId = externalEventSelect.value;
+                
+                if (opt.budgetChange < 0) {
+                    gameState.spentOnEvents = (gameState.spentOnEvents || 0) + Math.abs(opt.budgetChange);
+                }
+                
+                // Registrar evento como resuelto para evitar duplicidad y exploits
+                gameState.eventsResolved = gameState.eventsResolved || [];
+                gameState.eventsResolved.push(eventId);
+                
                 applyEffects(opt.budgetChange, opt.impact);
-                externalEventSelect.value = ''; eventOptionsContainer.classList.add('hidden'); applyEventButton.disabled = true;
-                addNews('Evento externo resuelto.');
-                loadSustainableBonds(); // Refrescar bonos por si bajó un indicador
+                
+                externalEventSelect.value = ''; 
+                eventOptionsContainer.classList.add('hidden'); 
+                applyEventButton.disabled = true;
+                
+                addNews(`⚡ Decisión de crisis ejecutada: ${opt.text}`);
+                loadProjects(); // Refrescar proyectos por si el presupuesto varió
+                loadSustainableBonds(); 
+                loadExternalEvents(); // Ocultar el evento resuelto
             }
         });
 
         sustainableBondSelect.addEventListener('change', (e) => {
-            bondOptionsContainer.classList.add('hidden'); applyBondButton.disabled = true;
-            if(e.target.selectedIndex > 0) {
+            bondOptionsContainer.classList.add('hidden'); 
+            applyBondButton.disabled = true;
+            if(e.target.selectedIndex > 0 && e.target.options[e.target.selectedIndex].dataset.bondData) {
                 const data = JSON.parse(e.target.options[e.target.selectedIndex].dataset.bondData);
                 showOptions('sustainable-bond', bondOptionsContainer, data);
             }
@@ -780,103 +946,201 @@
                 applyEffects(opt.budgetChange, opt.impact);
                 gameState.earnedFromBonds += opt.budgetChange;
                 
-                // GUARDAR EL BONO RECLAMADO PARA QUE DESAPAREZCA
                 gameState.bondsClaimed.push(bondId); 
-                
-                // RESTAURAR LA INTERFAZ
                 sustainableBondSelect.value = ''; 
                 bondOptionsContainer.classList.add('hidden'); 
                 applyBondButton.disabled = true;
-                addNews('¡Bono sostenible reclamado!');
-                loadSustainableBonds(); // Recarga la lista sin el bono usado
+                
+                addNews(`💰 ¡Bono verde concedido (+${new Intl.NumberFormat('es-CO').format(opt.budgetChange)} Bitcoin)!`);
+                loadProjects();
+                loadSustainableBonds(); 
             }
         });
 
-        // ==========================================
-        // CONFIGURACIÓN DE INTELIGENCIA ARTIFICIAL
-        // ==========================================
-        // PEGA AQUÍ TU CLAVE DE API DE GOOGLE GEMINI:
-        const GEMINI_API_KEY = "AIzaSyD-PsLCIwdigiX9iGLYQZPh9Oa9B8dWTlQ"; 
-        // ==========================================
-
-        // --- ECO@resma IA ---
+        // --- ECO@resma IA (Full-Stack + Fallback Inteligente) ---
         askAiButton.addEventListener('click', async () => {
             const q = aiQuestionInput.value.trim();
             if(!q) return;
-            aiResponseDisplay.textContent = "Eco@resma analizando..."; aiLoader.classList.remove('hidden'); askAiButton.disabled = true; copyAiResponseButton.classList.add('hidden');
-            let ctx = `Ciudad: ${gameState.cityName}\nPresupuesto: ${gameState.currentBudget}\nIndicadores:\n`;
-            for(const k in gameState.indicators) ctx += `- ${gameState.indicators[k].name}: ${gameState.indicators[k].score}\n`;
-            const payload = {
-                contents: [{ parts: [{ text: `${ctx}\nPregunta: ${q}` }] }],
-                systemInstruction: { parts: [{ text: "Eres Eco@resma, asesor de sostenibilidad del INEM. Responde conciso (max 2 párrafos) basándote en los datos de la ciudad." }] }
-            };
+            aiResponseDisplay.textContent = "Eco@resma está analizando las métricas de tu ciudad..."; 
+            aiLoader.classList.remove('hidden'); 
+            askAiButton.disabled = true; 
+            copyAiResponseButton.classList.add('hidden');
+            
             try {
-                if(!GEMINI_API_KEY || GEMINI_API_KEY === "AIzaSyD-PsLCIwdigiX9iGLYQZPh9Oa9B8dWTlQ") {
-                    aiResponseDisplay.textContent = "Falta configurar la API Key de Gemini. Por favor, añádela en el código de GitHub.";
-                } else {
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { 
-                        method: 'POST', 
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload) 
-                    });
-                    const data = await res.json();
-                    if(data.candidates && data.candidates[0].content.parts[0].text) {
-                        aiResponseDisplay.textContent = data.candidates[0].content.parts[0].text;
+                // 1. Intentar llamar al backend Express seguro de la app
+                const srvRes = await fetch('/api/gemini/advisor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: q,
+                        cityName: gameState.cityName,
+                        budget: gameState.currentBudget,
+                        indicators: gameState.indicators,
+                        mode: 'advice'
+                    })
+                });
+
+                if (srvRes.ok) {
+                    const data = await srvRes.json();
+                    if (data.advice) {
+                        aiResponseDisplay.textContent = data.advice;
                         copyAiResponseButton.classList.remove('hidden');
-                    } else {
-                        aiResponseDisplay.textContent = "No se pudo generar respuesta adecuada. " + (data.error ? data.error.message : "");
+                        aiLoader.classList.add('hidden');
+                        askAiButton.disabled = false;
+                        return;
                     }
                 }
-            } catch(e) { aiResponseDisplay.textContent = "Error consultando a Eco@resma."; }
-            aiLoader.classList.add('hidden'); askAiButton.disabled = false;
+            } catch (err) {
+                // Servidor local no disponible (ej. ejecutando como archivo estático o en GitHub Pages)
+            }
+
+            // 2. Si estás en GitHub Pages y configuraste GEMINI_API_KEY
+            if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY && GEMINI_API_KEY.startsWith("AIza")) {
+                try {
+                    let ctx = `Ciudad: ${gameState.cityName}\nPresupuesto: ${gameState.currentBudget}\nIndicadores:\n`;
+                    for(const k in gameState.indicators) ctx += `- ${gameState.indicators[k].name}: ${gameState.indicators[k].score}\n`;
+                    const payload = {
+                        contents: [{ parts: [{ text: `${ctx}\nPregunta: ${q}` }] }],
+                        systemInstruction: { parts: [{ text: "Eres Eco@resma, asesor de sostenibilidad del INEM. Responde conciso (máximo 2 párrafos) basándote en los datos de la ciudad." }] }
+                    };
+                    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const gemData = await geminiRes.json();
+                    if (gemData.candidates && gemData.candidates[0].content && gemData.candidates[0].content.parts[0].text) {
+                        aiResponseDisplay.textContent = gemData.candidates[0].content.parts[0].text;
+                        copyAiResponseButton.classList.remove('hidden');
+                        aiLoader.classList.add('hidden');
+                        askAiButton.disabled = false;
+                        return;
+                    }
+                } catch(e) {
+                    console.warn("Direct Gemini call failed:", e);
+                }
+            }
+
+            // 3. Asesor heurístico inteligente de respaldo (funciona siempre automáticamente sin claves)
+            let lowestInd = null;
+            for (const key in gameState.indicators) {
+                const item = gameState.indicators[key];
+                if (!lowestInd || item.score < lowestInd.score) {
+                    lowestInd = item;
+                }
+            }
+
+            setTimeout(() => {
+                let consejo = `Estimado(a) alcalde de ${gameState.cityName}:\n\n` +
+                              `Tu indicador más vulnerable en este momento es "${lowestInd.name}" con una puntuación de ${lowestInd.score}/100 (la meta es 75). ` +
+                              `Te aconsejo filtrar los proyectos por categoría para reforzar este eje y estar atento a los Bonos Sostenibles que requieren al menos 55 o 60 puntos para inyectar nuevo capital.`;
+                aiResponseDisplay.textContent = consejo;
+                copyAiResponseButton.classList.remove('hidden');
+                aiLoader.classList.add('hidden');
+                askAiButton.disabled = false;
+            }, 500);
         });
 
         // --- RESUMEN FINAL ---
         finishGameButton.addEventListener('click', async () => {
-            gameState.gameInProgress = false; saveGameState(); syncToCloud();
+            gameState.gameInProgress = false; 
+            saveGameState(); 
+            syncToCloud();
+
             summaryCityName.textContent = gameState.cityName;
             summaryInitialBudget.textContent = formatCurrency(gameState.initialBudget).replace('+', '');
-            summaryTotalExpenses.textContent = formatCurrency(gameState.spentOnProjects).replace('+', '');
+            
+            const totalSpent = (gameState.spentOnProjects || 0) + (gameState.spentOnEvents || 0);
+            summaryTotalExpenses.textContent = `${formatCurrency(totalSpent).replace('+', '')} (Proyectos: ${formatCurrency(gameState.spentOnProjects || 0).replace('+', '')}${gameState.spentOnEvents ? `, Crisis: ${formatCurrency(gameState.spentOnEvents).replace('+', '')}` : ''})`;
+            
+            summaryTotalBonds.textContent = formatCurrency(gameState.earnedFromBonds || 0).replace('+', '');
             summaryFinalBudget.textContent = formatCurrency(gameState.currentBudget).replace('+', '');
+            
             summaryIndicators.innerHTML = '';
             let allMet = true;
             for(const k in gameState.indicators) {
                 const ind = gameState.indicators[k];
-                allMet = allMet && (ind.score >= ind.target);
-                summaryIndicators.innerHTML += `<p>${ind.name}: ${ind.score}/100 ${ind.score >= ind.target ? '✅' : '❌'}</p>`;
+                const met = ind.score >= ind.target;
+                allMet = allMet && met;
+                summaryIndicators.innerHTML += `
+                    <div class="flex justify-between items-center text-xs py-1 border-b">
+                        <span>${ind.icon} ${ind.name}</span>
+                        <span class="font-bold ${met ? 'text-green-600' : 'text-red-500'}">${ind.score}/100 ${met ? '✅ Meta lograda' : '❌ Por debajo de 75'}</span>
+                    </div>`;
             }
-            summaryResultMessage.textContent = (allMet && gameState.currentBudget >= (gameState.initialBudget*0.2)) ? "¡GANASTE!" : "¡PERDISTE!";
+
+            const budgetPreserved = gameState.currentBudget >= (gameState.initialBudget * 0.2);
+            const isWinner = allMet && budgetPreserved;
+
+            if (isWinner) {
+                summaryResultMessage.className = "text-xl font-bold text-center mb-6 py-2 px-4 rounded-md bg-green-100 text-green-800 border border-green-300";
+                summaryResultMessage.textContent = "🏆 ¡MISIÓN CUMPLIDA! Has construido una Ciudad Verdaderamente Sostenible.";
+            } else {
+                summaryResultMessage.className = "text-xl font-bold text-center mb-6 py-2 px-4 rounded-md bg-amber-100 text-amber-800 border border-amber-300";
+                let reason = !allMet ? "No todos los indicadores llegaron a la meta de 75 puntos." : "No se preservó el 20% de reserva presupuestaria requerida.";
+                summaryResultMessage.textContent = `⚠️ Mandato finalizado sin cumplir todas las metas: ${reason}`;
+            }
+
             summaryModal.classList.remove('hidden');
             
-            // Llamada IA Final
-            finalAiLoader.classList.remove('hidden'); finalAiResponse.textContent = "Generando discurso final...";
-            
-            let finalContext = `La ciudad '${gameState.cityName}' finalizó.\nPresupuesto Inicial: ${gameState.initialBudget}\nPresupuesto Final: ${gameState.currentBudget}\nIndicadores finales:\n`;
-            for (const key in gameState.indicators) finalContext += `- ${gameState.indicators[key].name}: ${gameState.indicators[key].score}/100\n`;
-            finalContext += `Victoria: ${allMet && gameState.currentBudget >= (gameState.initialBudget*0.2) ? 'SÍ' : 'NO'}`;
+            // Discurso de cierre de Eco@resma
+            finalAiLoader.classList.remove('hidden'); 
+            finalAiResponse.textContent = "Eco@resma está redactando el balance del mandato...";
 
-            const payload = {
-                contents: [{ parts: [{ text: finalContext }] }],
-                systemInstruction: { parts: [{ text: "Eres Eco@resma. Redacta el discurso final de cierre de mandato analizando estos resultados (máximo 2 párrafos). Tono oficial y reflexivo." }] }
-            };
+            let finalContext = `Ciudad '${gameState.cityName}' finalizó su mandato.\nPresupuesto Inicial: ${gameState.initialBudget}\nPresupuesto Final: ${gameState.currentBudget}\nResultado global: ${isWinner ? 'VICTORIA SOSTENIBLE' : 'METAS PARCIALES'}\n`;
+            for (const key in gameState.indicators) {
+                finalContext += `- ${gameState.indicators[key].name}: ${gameState.indicators[key].score}/100 (Meta: ${gameState.indicators[key].target})\n`;
+            }
 
             try {
-                if(!GEMINI_API_KEY || GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI") {
-                    finalAiResponse.textContent = "Ciudadanos, nuestro mandato ha concluido. " + (allMet ? "¡Lo hemos logrado!" : "Aún nos falta camino para la sostenibilidad real.");
-                } else {
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { 
-                        method: 'POST', 
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload) 
-                    });
-                    const data = await res.json();
-                    if(data.candidates && data.candidates[0].content.parts[0].text) {
-                        finalAiResponse.textContent = data.candidates[0].content.parts[0].text;
-                    } else {
-                        finalAiResponse.textContent = "Ciudadanos, nuestro mandato ha concluido.";
+                const srvRes = await fetch('/api/gemini/advisor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        mode: 'summary',
+                        cityName: gameState.cityName,
+                        budget: gameState.currentBudget,
+                        finalContext
+                    })
+                });
+                if (srvRes.ok) {
+                    const data = await srvRes.json();
+                    if (data.advice) {
+                        finalAiResponse.textContent = data.advice;
+                        finalAiLoader.classList.add('hidden');
+                        return;
                     }
                 }
-            } catch(e) { finalAiResponse.textContent = "Discurso no disponible por error de conexión."; }
+            } catch (err) {
+                // Servidor local no disponible (GitHub Pages)
+            }
+
+            // 2. Si estás en GitHub Pages y configuraste GEMINI_API_KEY
+            if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY && GEMINI_API_KEY.startsWith("AIza")) {
+                try {
+                    const payload = {
+                        contents: [{ parts: [{ text: finalContext }] }],
+                        systemInstruction: { parts: [{ text: "Eres Eco@resma. Redacta el discurso final de cierre de mandato analizando estos resultados (máximo 2 párrafos). Tono oficial, pedagógico y reflexivo." }] }
+                    };
+                    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const gemData = await geminiRes.json();
+                    if (gemData.candidates && gemData.candidates[0].content && gemData.candidates[0].content.parts[0].text) {
+                        finalAiResponse.textContent = gemData.candidates[0].content.parts[0].text;
+                        finalAiLoader.classList.add('hidden');
+                        return;
+                    }
+                } catch(e) {
+                    console.warn("Direct Gemini final speech failed:", e);
+                }
+            }
+
+            finalAiResponse.textContent = isWinner
+                ? `Ciudadanos de ${gameState.cityName}, su administración ha demostrado que el progreso técnico y la equidad social pueden caminar de la mano con el respeto ambiental. ¡Felicidades por alcanzar un modelo urbano ejemplar!`
+                : `Ciudadanos de ${gameState.cityName}, nuestro periodo de gobierno concluye con valiosos aprendizajes. La sostenibilidad exige perseverancia en las inversiones verdes y disciplina fiscal.`;
             finalAiLoader.classList.add('hidden');
         });
 
@@ -886,12 +1150,14 @@
         playAgainButton.addEventListener('click', () => { clearSavedGameState(); location.reload(); });
 
         document.addEventListener('DOMContentLoaded', () => {
-            if(loadGameState() && gameState.gameInProgress) {
-                setupScreen.classList.add('hidden'); gameScreen.classList.remove('hidden');
-                displayCityName.textContent = gameState.cityName;
-                if(gameState.roomPin) { displayRoomPin.textContent = gameState.roomPin; displayRoomPinContainer.classList.remove('hidden'); }
-                updateBudgetUI(); updateIndicatorsUI(); updateNewsFeedUI(); loadProjectCategories(); loadProjects(); loadExternalEvents(); loadSustainableBonds();
-                setTimeout(syncToCloud, 1500); // Sincroniza al tablero maestro al recargar
+            if(loadGameState()) {
+                if (gameState.gameInProgress && gameState.cityName) {
+                    cityNameInput.value = gameState.cityName;
+                    if(gameState.roomPin) roomPinInput.value = gameState.roomPin;
+                    startGameButton.classList.remove('hidden');
+                    resetGameButton.classList.remove('hidden');
+                    saveSetupButton.textContent = "Sobrescribir y Empezar de Nuevo";
+                }
             }
         });
     </script>
