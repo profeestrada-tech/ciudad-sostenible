@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard del Docente - Ciudad Sostenible</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .indicator-pill {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            text-align: center;
+            min-width: 3rem;
+        }
+        .status-red { background-color: #fee2e2; color: #991b1b; }
+        .status-yellow { background-color: #fef3c7; color: #92400e; }
+        .status-green { background-color: #dcfce3; color: #166534; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-extrabold text-sky-800">Panel de Control: INEM</h1>
+            <p class="text-gray-600">Simulador de Ciudades Sostenibles</p>
+        </div>
+        <div id="connection-status" class="flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full font-semibold text-sm">
+            <span class="animate-pulse">●</span> Conectando a la nube...
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col gap-6">
+        
+        <!-- Controls & PIN -->
+        <div class="glass-panel rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+                <h2 class="text-lg font-bold text-gray-700 uppercase tracking-wide">Código de la Sala</h2>
+                <p class="text-sm text-gray-500 mb-2">Los estudiantes deben ingresar este PIN en sus dispositivos.</p>
+                <div id="pin-display" class="text-6xl font-black text-sky-600 tracking-widest bg-sky-50 px-6 py-2 rounded-xl inline-block border-2 border-sky-200">
+                    ----
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-3 w-full md:w-auto">
+                <button id="btn-create-room" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-transform active:scale-95 disabled:opacity-50" disabled>
+                    Generar Nueva Sala
+                </button>
+                <button id="btn-close-room" class="bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2 px-8 rounded-xl border border-red-200 transition-transform active:scale-95 hidden">
+                    Cerrar Sala
+                </button>
+            </div>
+        </div>
+
+        <!-- Live Leaderboard -->
+        <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                📡 Ciudades Conectadas en Tiempo Real
+                <span id="city-count" class="bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-sm">0 Equipos</span>
+            </h2>
+            
+            <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider border-b border-gray-200">
+                            <th class="p-4 font-semibold">Ciudad / Equipo</th>
+                            <th class="p-4 font-semibold text-right">Presupuesto</th>
+                            <th class="p-4 font-semibold text-center" title="Calidad del Aire">💨 Aire</th>
+                            <th class="p-4 font-semibold text-center" title="Gestión del Agua">💧 Agua</th>
+                            <th class="p-4 font-semibold text-center" title="Energía Renovable">⚡ Energía</th>
+                            <th class="p-4 font-semibold text-center" title="Reducción Residuos">♻️ Resid.</th>
+                            <th class="p-4 font-semibold text-center" title="Espacios Verdes">🌳 Z.Verdes</th>
+                            <th class="p-4 font-semibold text-center" title="Equidad Social">🤝 Equidad</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cities-table-body" class="divide-y divide-gray-100">
+                        <!-- Las ciudades aparecerán aquí -->
+                        <tr>
+                            <td colspan="8" class="p-8 text-center text-gray-400 italic">
+                                Esperando a que se genere una sala y se conecten los equipos...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDKs y Lógica -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Inicialización segura del entorno de nube
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'inem-ciudad-sostenible';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        
+        let app, db, auth;
+        let currentPin = null;
+        let citiesUnsubscribe = null;
+
+        const ui = {
+            connStatus: document.getElementById('connection-status'),
+            pinDisplay: document.getElementById('pin-display'),
+            btnCreateRoom: document.getElementById('btn-create-room'),
+            btnCloseRoom: document.getElementById('btn-close-room'),
+            tableBody: document.getElementById('cities-table-body'),
+            cityCount: document.getElementById('city-count')
+        };
+
+        // Utilidad para color de píldoras
+        function getScoreClass(score) {
+            if (score >= 75) return 'status-green';
+            if (score >= 50) return 'status-yellow';
+            return 'status-red';
+        }
+
+        function formatBtc(amount) {
+            return new Intl.NumberFormat('es-CO').format(amount) + ' Btc';
+        }
+
+        async function initCloud() {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                     ui.connStatus.innerHTML = "⚠️ Modo Local (Sin Nube)";
+                     ui.connStatus.className = "flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-full font-semibold text-sm";
+                     return;
+                }
+                
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Auth
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        ui.connStatus.innerHTML = "🟢 Nube Conectada";
+                        ui.connStatus.className = "flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-full font-semibold text-sm";
+                        ui.btnCreateRoom.disabled = false;
+                    }
+                });
+            } catch (error) {
+                console.error("Cloud Error:", error);
+                ui.connStatus.innerHTML = "🔴 Error de Conexión";
+                ui.connStatus.className = "flex items-center gap-2 px-4 py-2 bg-red-100 text-red-800 rounded-full font-semibold text-sm";
+            }
+        }
+
+        async function createRoom() {
+            if (!auth.currentUser) return;
+
+            // Generar PIN aleatorio de 4 dígitos
+            currentPin = Math.floor(1000 + Math.random() * 9000).toString();
+            ui.pinDisplay.textContent = currentPin;
+            ui.btnCreateRoom.classList.add('hidden');
+            ui.btnCloseRoom.classList.remove('hidden');
+            ui.tableBody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-500 italic">Sala abierta. Esperando estudiantes...</td></tr>';
+
+            try {
+                // Registrar sala en la nube
+                const salaRef = doc(db, 'artifacts', appId, 'public', 'data', 'salas', currentPin);
+                await setDoc(salaRef, {
+                    createdAt: new Date().toISOString(),
+                    status: 'active',
+                    teacherId: auth.currentUser.uid
+                });
+                
+                startListeningToCities();
+            } catch (error) {
+                console.error("Error creating room:", error);
+                alert("Hubo un error al crear la sala.");
+            }
+        }
+
+        function startListeningToCities() {
+            if (!auth.currentUser || !currentPin) return;
+
+            const ciudadesRef = collection(db, 'artifacts', appId, 'public', 'data', 'ciudades');
+            
+            // Escuchar todas las ciudades y filtrar por PIN en memoria (regla de optimización)
+            citiesUnsubscribe = onSnapshot(ciudadesRef, (snapshot) => {
+                const joinedCities = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.salaPin === currentPin) {
+                        joinedCities.push({ id: doc.id, ...data });
+                    }
+                });
+                
+                updateLeaderboard(joinedCities);
+            }, (error) => {
+                console.error("Error listening to cities:", error);
+            });
+        }
+
+        function updateLeaderboard(cities) {
+            ui.cityCount.textContent = `${cities.length} Equipos`;
+            
+            if (cities.length === 0) {
+                ui.tableBody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-500 italic">Sala abierta. Esperando estudiantes...</td></tr>';
+                return;
+            }
+
+            // Ordenar por presupuesto (como desempate básico)
+            cities.sort((a, b) => b.currentBudget - a.currentBudget);
+
+            ui.tableBody.innerHTML = '';
+            cities.forEach(city => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-sky-50 transition-colors";
+                
+                // Valores por defecto seguros si la ciudad acaba de entrar y no tiene data completa
+                const ind = city.indicators || {};
+                const air = ind.air_quality?.score ?? 50;
+                const water = ind.water_management?.score ?? 50;
+                const energy = ind.renewable_energy?.score ?? 50;
+                const waste = ind.waste_reduction?.score ?? 50;
+                const green = ind.green_spaces?.score ?? 50;
+                const social = ind.social_equity?.score ?? 50;
+
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-sky-900">${city.cityName || 'Ciudad Anónima'}</td>
+                    <td class="p-4 text-right font-medium text-gray-700">${formatBtc(city.currentBudget || 0)}</td>
+                    <td class="p-4 text-center"><span class="indicator-pill ${getScoreClass(air)}">${air}</span></td>
+                    <td class="p-4 text-center"><span class="indicator-pill ${getScoreClass(water)}">${water}</span></td>
+                    <td class="p-4 text-center"><span class="indicator-pill ${getScoreClass(energy)}">${energy}</span></td>
+                    <td class="p-4 text-center"><span class="indicator-pill ${getScoreClass(waste)}">${waste}</span></td>
+                    <td class="p-4 text-center"><span class="indicator-pill ${getScoreClass(green)}">${green}</span></td>
+                    <td class="p-4 text-center"><span class="indicator-pill ${getScoreClass(social)}">${social}</span></td>
+                `;
+                ui.tableBody.appendChild(tr);
+            });
+        }
+
+        // Eventos
+        ui.btnCreateRoom.addEventListener('click', createRoom);
+        ui.btnCloseRoom.addEventListener('click', () => {
+            if (citiesUnsubscribe) citiesUnsubscribe();
+            currentPin = null;
+            ui.pinDisplay.textContent = '----';
+            ui.btnCreateRoom.classList.remove('hidden');
+            ui.btnCloseRoom.classList.add('hidden');
+            ui.tableBody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-400 italic">Sala cerrada.</td></tr>';
+            ui.cityCount.textContent = '0 Equipos';
+        });
+
+        // Iniciar
+        initCloud();
+    </script>
+</body>
+</html>

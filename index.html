@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciudad Sostenible - Juego Educativo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .hero-pattern {
+            background-color: #f0f9ff;
+            background-image: radial-gradient(#bae6fd 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navegación -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🌍</span>
+                <span class="font-bold text-xl text-sky-800">Ciudad Sostenible</span>
+            </div>
+            <div class="hidden md:flex gap-6 font-medium text-gray-600">
+                <a href="#inicio" class="hover:text-sky-600 transition">Inicio</a>
+                <a href="#como-jugar" class="hover:text-sky-600 transition">Cómo Jugar</a>
+                <a href="#recursos" class="hover:text-sky-600 transition">Recursos Docentes</a>
+            </div>
+            <div>
+                <!-- En el futuro, este botón llevará al portal de estudiantes -->
+                <a href="juego.html" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-bold transition shadow-md">
+                    Entrar al Juego
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sección Hero (Principal) -->
+    <header id="inicio" class="hero-pattern border-b border-sky-100">
+        <div class="max-w-4xl mx-auto px-4 py-20 text-center">
+            <span class="bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4 inline-block">Innovación Educativa INEM</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+                Construye el futuro, <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-green-500">gestiona la sostenibilidad.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                Un juego de simulación estratégica para el aula. Lidera tu ciudad, maneja el presupuesto, enfrenta crisis climáticas y alcanza los Objetivos de Desarrollo Sostenible (ODS).
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="juego.html" class="bg-sky-600 hover:bg-sky-700 text-white px-8 py-3 rounded-lg font-bold text-lg transition shadow-lg flex items-center justify-center gap-2">
+                    <svg width="20" height="20" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Probar Demo
+                </a>
+                <a href="#recursos" class="bg-white border border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-3 rounded-lg font-bold text-lg transition flex items-center justify-center gap-2">
+                    Descargar Materiales
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección Cómo Jugar -->
+    <section id="como-jugar" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">¿De qué trata la dinámica?</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-6 rounded-xl bg-gray-50 border border-gray-100">
+                    <div class="text-4xl mb-4">🤝</div>
+                    <h3 class="text-xl font-bold mb-2">1. Trabaja en Equipo</h3>
+                    <p class="text-gray-600">Forma grupos, asume el rol de alcalde y debate con tu equipo para tomar las mejores decisiones para el futuro de tu ciudad.</p>
+                </div>
+                <div class="text-center p-6 rounded-xl bg-gray-50 border border-gray-100">
+                    <div class="text-4xl mb-4">🏗️</div>
+                    <h3 class="text-xl font-bold mb-2">2. Invierte con Cautela</h3>
+                    <p class="text-gray-600">Utiliza la herramienta digital para financiar proyectos de infraestructura, educación o industria cuidando tu presupuesto.</p>
+                </div>
+                <div class="text-center p-6 rounded-xl bg-gray-50 border border-gray-100">
+                    <div class="text-4xl mb-4">⚖️</div>
+                    <h3 class="text-xl font-bold mb-2">3. Equilibra los ODS</h3>
+                    <p class="text-gray-600">Mantén los 6 indicadores (Aire, Agua, Energía, Residuos, Áreas Verdes y Equidad Social) por encima del límite para ganar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Recursos para Docentes -->
+    <section id="recursos" class="py-16 bg-sky-800 text-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Recursos para Docentes (Imprimibles)</h2>
+                <p class="text-sky-200 max-w-2xl mx-auto">
+                    ¿Quieres llevar este juego a tu colegio? Descarga gratuitamente todos los materiales físicos necesarios para complementar la aplicación digital en el aula.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-sky-100 p-3 rounded-lg text-sky-600">
+                            <svg width="24" height="24" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Metodología del Juego</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Guía paso a paso para el facilitador, incluyendo tiempos sugeridos y reglas de victoria.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg width="16" height="16" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-green-100 p-3 rounded-lg text-green-600">
+                            <svg width="24" height="24" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Lista de Proyectos</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Catálogo completo de proyectos de infraestructura, economía y sociedad con sus etiquetas correspondientes.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg width="16" height="16" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-red-100 p-3 rounded-lg text-red-600">
+                            <svg width="24" height="24" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Eventos Externos</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Tarjetas recortables con crisis y eventualidades que los estudiantes deberán resolver.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg width="16" height="16" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                            <svg width="24" height="24" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Bonos Sostenibles</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Tarjetas recortables con recompensas financieras para las ciudades que logran cumplir con los ODS.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg width="16" height="16" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-orange-100 p-3 rounded-lg text-orange-600">
+                            <svg width="24" height="24" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Bosquejo del Mapa</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Formato físico para que los grupos planifiquen su zonificación y dibujen los proyectos adquiridos.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg width="16" height="16" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-green-100 p-3 rounded-lg text-green-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Lista de Proyectos</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Catálogo completo de proyectos de infraestructura, economía y sociedad con sus etiquetas correspondientes.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-red-100 p-3 rounded-lg text-red-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Eventos Externos</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Tarjetas recortables con crisis y eventualidades que los estudiantes deberán resolver.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Bonos Sostenibles</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Tarjetas recortables con recompensas financieras para las ciudades que logran cumplir con los ODS.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+                <!-- Tarjeta de Recurso -->
+                <div class="bg-white text-gray-800 p-6 rounded-xl shadow-lg flex flex-col">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-orange-100 p-3 rounded-lg text-orange-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-lg">Bosquejo del Mapa</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 flex-grow">Formato físico para que los grupos planifiquen su zonificación y dibujen los proyectos adquiridos.</p>
+                    <a href="#" class="w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Descargar PDF
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center">
+        <div class="max-w-6xl mx-auto px-4">
+            <p class="mb-2">Proyecto educativo creado en colaboración con docentes para la integración de tecnología y los ODS en el aula.</p>
+            <p class="text-sm">© 2026 - INEM Innovación</p>
+        </div>
+    </footer>
+
+</body>
+</html>
