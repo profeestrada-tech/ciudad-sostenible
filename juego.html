@@ -353,11 +353,15 @@
             appId: "1:305405276300:web:0a6ba0f6b8f2e1fe174ba9"
         };
         
-        // --- GOOGLE GEMINI API KEY (OPCIONAL PARA ECO@RESMA EN GITHUB PAGES) ---
-        // Si publicas este archivo en GitHub Pages (sin servidor Node.js), puedes pegar aquí tu clave de Google Gemini
-        // generada gratis en: https://aistudio.google.com/app/apikey
-        // Si la dejas vacía, Eco@resma funciona automáticamente con su asesor pedagógico integrado.
-        const GEMINI_API_KEY = "AQ.Ab8RN6Jg4EBGKrqepPpXitZ3R05Ap5nQAO0gVW7meK8iI7eqhw";
+        // --- GOOGLE GEMINI API KEY (CONFIGURADA PARA ECO@RESMA EN GITHUB PAGES) ---
+        const GEMINI_API_KEY = "AQ.Ab8RN6KW1UoX5hEgkzuMESM9bNjAeBwZtCcHYeaNvEQV9ZcPiQ";
+
+        // --- ECO@RESMA: INSTRUCCIONES OFICIALES DEL AGENTE ---
+        const ECO_RESMA_SYSTEM_INSTRUCTION = `Eres Eco@resma, agente de inteligencia artificial experto en Gestión de Ciudades Sostenibles del INEM.
+Tus conocimientos integran: ingeniería ambiental y sanitaria, urbanismo, ecología urbana, SUDS, economía circular, energías renovables, cambio climático, movilidad sostenible, salud ambiental, ciudades inteligentes (IoT/SIG) y educación ambiental (PRAE).
+Contexto territorial principal: Colombia, Montería, Córdoba, Región Caribe colombiana y ciudades intermedias en desarrollo (altas temperaturas, isla de calor, inundaciones, drenaje pluvial, vulnerabilidad climática y protección de cuencas).
+Marco normativo: Constitución 1991, Ley 99/93 (SINA), Ley 142/94, Ley 388/97, Ley 1259/08, Ley 1523/12, Ley 1715/14, Ley 1931/18, Ley 1964/19, Ley 2169/21, Ley 2232/22, Decretos 1076/1077 de 2015 y ODS.
+Estilo: Técnico, riguroso, científico pero accesible y pedagógico, orientado a la acción y toma de decisiones.`;
         
         let app, db, auth;
         let isCloudConnected = false;
@@ -995,29 +999,35 @@
             }
 
             // 2. Si estás en GitHub Pages y configuraste GEMINI_API_KEY
-            if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY && GEMINI_API_KEY.startsWith("AIza")) {
-                try {
-                    let ctx = `Ciudad: ${gameState.cityName}\nPresupuesto: ${gameState.currentBudget}\nIndicadores:\n`;
-                    for(const k in gameState.indicators) ctx += `- ${gameState.indicators[k].name}: ${gameState.indicators[k].score}\n`;
-                    const payload = {
-                        contents: [{ parts: [{ text: `${ctx}\nPregunta: ${q}` }] }],
-                        systemInstruction: { parts: [{ text: "Eres Eco@resma, asesor de sostenibilidad del INEM. Responde conciso (máximo 2 párrafos) basándote en los datos de la ciudad." }] }
-                    };
-                    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const gemData = await geminiRes.json();
-                    if (gemData.candidates && gemData.candidates[0].content && gemData.candidates[0].content.parts[0].text) {
-                        aiResponseDisplay.textContent = gemData.candidates[0].content.parts[0].text;
-                        copyAiResponseButton.classList.remove('hidden');
-                        aiLoader.classList.add('hidden');
-                        askAiButton.disabled = false;
-                        return;
+            if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY && GEMINI_API_KEY.trim().length > 5) {
+                const models = ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+                let ctx = `Ciudad: ${gameState.cityName}\nPresupuesto: ${gameState.currentBudget}\nIndicadores:\n`;
+                for(const k in gameState.indicators) ctx += `- ${gameState.indicators[k].name}: ${gameState.indicators[k].score}\n`;
+                const payload = {
+                    contents: [{ parts: [{ text: `${ctx}\nPregunta: ${q}` }] }],
+                    systemInstruction: { parts: [{ text: `${ECO_RESMA_SYSTEM_INSTRUCTION}\n\nEn este momento estás asesorando al estudiante/alcalde durante su mandato. Responde en máximo 2 a 3 párrafos técnicos pero accesibles y orientados a la toma de decisiones inmediatas.` }] }
+                };
+
+                for (const modelName of models) {
+                    try {
+                        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY.trim())}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (geminiRes.ok) {
+                            const gemData = await geminiRes.json();
+                            if (gemData.candidates && gemData.candidates[0].content && gemData.candidates[0].content.parts[0].text) {
+                                aiResponseDisplay.textContent = gemData.candidates[0].content.parts[0].text;
+                                copyAiResponseButton.classList.remove('hidden');
+                                aiLoader.classList.add('hidden');
+                                askAiButton.disabled = false;
+                                return;
+                            }
+                        }
+                    } catch(e) {
+                        console.warn(`Direct Gemini call failed with ${modelName}:`, e);
                     }
-                } catch(e) {
-                    console.warn("Direct Gemini call failed:", e);
                 }
             }
 
@@ -1116,25 +1126,30 @@
             }
 
             // 2. Si estás en GitHub Pages y configuraste GEMINI_API_KEY
-            if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY && GEMINI_API_KEY.startsWith("AIza")) {
-                try {
-                    const payload = {
-                        contents: [{ parts: [{ text: finalContext }] }],
-                        systemInstruction: { parts: [{ text: "Eres Eco@resma. Redacta el discurso final de cierre de mandato analizando estos resultados (máximo 2 párrafos). Tono oficial, pedagógico y reflexivo." }] }
-                    };
-                    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const gemData = await geminiRes.json();
-                    if (gemData.candidates && gemData.candidates[0].content && gemData.candidates[0].content.parts[0].text) {
-                        finalAiResponse.textContent = gemData.candidates[0].content.parts[0].text;
-                        finalAiLoader.classList.add('hidden');
-                        return;
+            if (typeof GEMINI_API_KEY !== 'undefined' && GEMINI_API_KEY && GEMINI_API_KEY.trim().length > 5) {
+                const models = ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+                const payload = {
+                    contents: [{ parts: [{ text: finalContext }] }],
+                    systemInstruction: { parts: [{ text: `${ECO_RESMA_SYSTEM_INSTRUCTION}\n\nEn este momento estás redactando el DISCURSO OFICIAL DE CIERRE DE MANDATO. Realiza una evaluación balanceada formal, reflexiva, pedagógica e inspiradora sobre los resultados logrados (máximo 2 a 3 párrafos).` }] }
+                };
+                for (const modelName of models) {
+                    try {
+                        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY.trim())}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (geminiRes.ok) {
+                            const gemData = await geminiRes.json();
+                            if (gemData.candidates && gemData.candidates[0].content && gemData.candidates[0].content.parts[0].text) {
+                                finalAiResponse.textContent = gemData.candidates[0].content.parts[0].text;
+                                finalAiLoader.classList.add('hidden');
+                                return;
+                            }
+                        }
+                    } catch(e) {
+                        console.warn(`Direct Gemini final speech failed with ${modelName}:`, e);
                     }
-                } catch(e) {
-                    console.warn("Direct Gemini final speech failed:", e);
                 }
             }
 
