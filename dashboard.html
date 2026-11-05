@@ -106,7 +106,14 @@
 
         // Inicialización segura del entorno de nube
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'inem-ciudad-sostenible';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const firebaseConfig = {
+  apiKey: "AIzaSyD-PsLCIwdigiX9iGLYQZPh9Oa9B8dWTlQ",
+  authDomain: "ciudad-sostenible-inem.firebaseapp.com",
+  projectId: "ciudad-sostenible-inem",
+  storageBucket: "ciudad-sostenible-inem.firebasestorage.app",
+  messagingSenderId: "305405276300",
+  appId: "1:305405276300:web:0a6ba0f6b8f2e1fe174ba9"
+};
         
         let app, db, auth;
         let currentPin = null;
