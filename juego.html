@@ -796,7 +796,7 @@
         // CONFIGURACIÓN DE INTELIGENCIA ARTIFICIAL
         // ==========================================
         // PEGA AQUÍ TU CLAVE DE API DE GOOGLE GEMINI:
-        const GEMINI_API_KEY = "AQ.Ab8RN6KxwZO3i5mK9WWazHyP08k_6BiYRZ0sW8I2IbqFFrVtJw"; 
+        const GEMINI_API_KEY = "AQ.Ab8RN6L7ptLLMqPjaWXFPCZavKybYA-KeCToZvHFo-H-Q2dEfQ"; 
         // ==========================================
 
         // --- ECO@resma IA ---
@@ -811,7 +811,7 @@
                 systemInstruction: { parts: [{ text: "Eres Eco@resma, asesor de sostenibilidad del INEM. Responde conciso (max 2 párrafos) basándote en los datos de la ciudad." }] }
             };
             try {
-                if(!GEMINI_API_KEY || GEMINI_API_KEY === "AQ.Ab8RN6KxwZO3i5mK9WWazHyP08k_6BiYRZ0sW8I2IbqFFrVtJw") {
+                if(!GEMINI_API_KEY || GEMINI_API_KEY === "AQ.Ab8RN6L7ptLLMqPjaWXFPCZavKybYA-KeCToZvHFo-H-Q2dEfQ") {
                     aiResponseDisplay.textContent = "Falta configurar la API Key de Gemini. Por favor, añádela en el código de GitHub.";
                 } else {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { 
