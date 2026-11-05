@@ -337,14 +337,7 @@
 
         // --- CLOUD SETUP ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'inem-ciudad-sostenible';
-        const firebaseConfig = {
-  apiKey: "AIzaSyD-PsLCIwdigiX9iGLYQZPh9Oa9B8dWTlQ",
-  authDomain: "ciudad-sostenible-inem.firebaseapp.com",
-  projectId: "ciudad-sostenible-inem",
-  storageBucket: "ciudad-sostenible-inem.firebasestorage.app",
-  messagingSenderId: "305405276300",
-  appId: "1:305405276300:web:0a6ba0f6b8f2e1fe174ba9"
-};
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         
         let app, db, auth;
         let isCloudConnected = false;
@@ -792,6 +785,13 @@
             }
         });
 
+        // ==========================================
+        // CONFIGURACIÓN DE INTELIGENCIA ARTIFICIAL
+        // ==========================================
+        // PEGA AQUÍ TU CLAVE DE API DE GOOGLE GEMINI:
+        const GEMINI_API_KEY = "AIzaSyBhNqy369tQJTAiefTzifqMEEnqnpO1pm4"; 
+        // ==========================================
+
         // --- ECO@resma IA ---
         askAiButton.addEventListener('click', async () => {
             const q = aiQuestionInput.value.trim();
@@ -804,21 +804,28 @@
                 systemInstruction: { parts: [{ text: "Eres Eco@resma, asesor de sostenibilidad del INEM. Responde conciso (max 2 párrafos) basándote en los datos de la ciudad." }] }
             };
             try {
-                // LLAMADA IA SIMULADA (Reemplaza con el script original de Gemini si es necesario)
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=`, { method: 'POST', body: JSON.stringify(payload) });
-                const data = await res.json();
-                if(data.candidates && data.candidates[0].content.parts[0].text) {
-                    aiResponseDisplay.textContent = data.candidates[0].content.parts[0].text;
-                    copyAiResponseButton.classList.remove('hidden');
+                if(!GEMINI_API_KEY || GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI") {
+                    aiResponseDisplay.textContent = "Falta configurar la API Key de Gemini. Por favor, añádela en el código de GitHub.";
                 } else {
-                    aiResponseDisplay.textContent = "No se pudo generar respuesta adecuada.";
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload) 
+                    });
+                    const data = await res.json();
+                    if(data.candidates && data.candidates[0].content.parts[0].text) {
+                        aiResponseDisplay.textContent = data.candidates[0].content.parts[0].text;
+                        copyAiResponseButton.classList.remove('hidden');
+                    } else {
+                        aiResponseDisplay.textContent = "No se pudo generar respuesta adecuada. " + (data.error ? data.error.message : "");
+                    }
                 }
             } catch(e) { aiResponseDisplay.textContent = "Error consultando a Eco@resma."; }
             aiLoader.classList.add('hidden'); askAiButton.disabled = false;
         });
 
         // --- RESUMEN FINAL ---
-        finishGameButton.addEventListener('click', () => {
+        finishGameButton.addEventListener('click', async () => {
             gameState.gameInProgress = false; saveGameState(); syncToCloud();
             summaryCityName.textContent = gameState.cityName;
             summaryInitialBudget.textContent = formatCurrency(gameState.initialBudget).replace('+', '');
@@ -836,10 +843,34 @@
             
             // Llamada IA Final
             finalAiLoader.classList.remove('hidden'); finalAiResponse.textContent = "Generando discurso final...";
-            setTimeout(() => { // Simulación si no hay key
-                finalAiResponse.textContent = "Ciudadanos, Eco@resma informa que nuestro mandato ha concluido. " + (allMet ? "¡Lo hemos logrado!" : "Aún nos falta camino para la sostenibilidad real.");
-                finalAiLoader.classList.add('hidden');
-            }, 2000);
+            
+            let finalContext = `La ciudad '${gameState.cityName}' finalizó.\nPresupuesto Inicial: ${gameState.initialBudget}\nPresupuesto Final: ${gameState.currentBudget}\nIndicadores finales:\n`;
+            for (const key in gameState.indicators) finalContext += `- ${gameState.indicators[key].name}: ${gameState.indicators[key].score}/100\n`;
+            finalContext += `Victoria: ${allMet && gameState.currentBudget >= (gameState.initialBudget*0.2) ? 'SÍ' : 'NO'}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: finalContext }] }],
+                systemInstruction: { parts: [{ text: "Eres Eco@resma. Redacta el discurso final de cierre de mandato analizando estos resultados (máximo 2 párrafos). Tono oficial y reflexivo." }] }
+            };
+
+            try {
+                if(!GEMINI_API_KEY || GEMINI_API_KEY === "PEGA_TU_CLAVE_AQUI") {
+                    finalAiResponse.textContent = "Ciudadanos, nuestro mandato ha concluido. " + (allMet ? "¡Lo hemos logrado!" : "Aún nos falta camino para la sostenibilidad real.");
+                } else {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload) 
+                    });
+                    const data = await res.json();
+                    if(data.candidates && data.candidates[0].content.parts[0].text) {
+                        finalAiResponse.textContent = data.candidates[0].content.parts[0].text;
+                    } else {
+                        finalAiResponse.textContent = "Ciudadanos, nuestro mandato ha concluido.";
+                    }
+                }
+            } catch(e) { finalAiResponse.textContent = "Discurso no disponible por error de conexión."; }
+            finalAiLoader.classList.add('hidden');
         });
 
         closeModalButton.addEventListener('click', () => summaryModal.classList.add('hidden'));
